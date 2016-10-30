@@ -45,7 +45,7 @@ public class TraceeMessagePropertiesConverter extends DefaultMessagePropertiesCo
 		final TraceeFilterConfiguration filterConfiguration = backend.getConfiguration(profile);
 		if (filterConfiguration.shouldProcessContext(AsyncProcess)) {
 			// Values are stored as type of LongStringHelper.ByteArrayLongString - but it's private
-			final Map<String, String> traceeContextMap = transformToTraceeContextMap(
+			final Map<String, String> traceeContextMap = TraceeSpringRabbitUtils.transformToTraceeContextMap(
 				(Map<String, ?>) messageProperties.getHeaders().get(TPIC_HEADER));
 			if (traceeContextMap != null && !traceeContextMap.isEmpty()) {
 				backend.putAll(filterConfiguration.filterDeniedParams(traceeContextMap, AsyncProcess));
@@ -54,16 +54,6 @@ public class TraceeMessagePropertiesConverter extends DefaultMessagePropertiesCo
 
 		Utilities.generateInvocationIdIfNecessary(backend);
 		return messageProperties;
-	}
-
-	private Map<String, String> transformToTraceeContextMap(final Map<String, ?> tpicMessageHeader) {
-		final Map<String, String> traceeContext = new HashMap<>();
-		if (tpicMessageHeader != null) {
-			for (Map.Entry<String, ?> stringObjectEntry : tpicMessageHeader.entrySet()) {
-				traceeContext.put(stringObjectEntry.getKey(), String.valueOf(stringObjectEntry.getValue()));
-			}
-		}
-		return traceeContext;
 	}
 
 	/**
