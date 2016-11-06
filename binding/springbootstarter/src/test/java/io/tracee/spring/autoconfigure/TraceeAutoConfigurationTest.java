@@ -1,7 +1,6 @@
 package io.tracee.spring.autoconfigure;
 
 import io.tracee.TraceeBackend;
-import io.tracee.binding.jms.TraceeConnectionFactory;
 import io.tracee.binding.springhttpclient.TraceeClientHttpRequestInterceptor;
 import io.tracee.configuration.TraceeFilterConfiguration;
 import io.tracee.configuration.TraceeFilterConfiguration.Channel;
@@ -20,11 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.client.RestTemplate;
-
-import javax.jms.ConnectionFactory;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -183,29 +178,6 @@ public class TraceeAutoConfigurationTest {
 		assertThat(restTemplate.getInterceptors(), Matchers.<ClientHttpRequestInterceptor>hasItem(instanceOf(TraceeClientHttpRequestInterceptor.class)));
 	}
 
-
-	@EnableJms
-	@EnableAutoConfiguration
-	static class JMSConfiguration {
-
-		@Autowired
-		ConnectionFactory connectionFactory;
-
-		@Autowired
-		JmsTemplate jmsTemplate;
-
-	}
-
-	@Test
-	public void providesTraceeConnectionFactory() {
-
-		load(JMSConfiguration.class, "debug=true", "logging.level.=DEBUG");
-		Object connectionFactory = context.getBean(ConnectionFactory.class);
-		assertThat(connectionFactory, instanceOf(TraceeConnectionFactory.class));
-		JmsTemplate jmsTemplate = context.getBean(JmsTemplate.class);
-		assertThat(jmsTemplate.getConnectionFactory(), instanceOf(TraceeConnectionFactory.class));
-	}
-
 	private void load(Class<?> config, String... environment) {
 		final AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 
@@ -214,5 +186,4 @@ public class TraceeAutoConfigurationTest {
 		applicationContext.refresh();
 		this.context = applicationContext;
 	}
-
 }

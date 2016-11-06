@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.equalTo;
 @ContextConfiguration(classes = TraceeClientHttpInterceptorSpringContextIT.Config.class)
 public class TraceeClientHttpInterceptorSpringContextIT {
 
-
 	@Configuration
 	@Import(TraceeSpringWebConfiguration.class)
 	static class Config {
@@ -54,8 +53,6 @@ public class TraceeClientHttpInterceptorSpringContextIT {
 			return new PermitAllTraceeFilterConfiguration();
 		}
 
-		;
-
 		@Bean
 		public RestTemplate restTemplate() {
 			return new RestTemplate();
@@ -64,6 +61,7 @@ public class TraceeClientHttpInterceptorSpringContextIT {
 
 	@Rule
 	public ErrorCollector collector = new ErrorCollector();
+
 	private final Handler requestHandler = new AbstractHandler() {
 		@Override
 		public void handle(String s, Request request, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException,
@@ -75,7 +73,9 @@ public class TraceeClientHttpInterceptorSpringContextIT {
 			request.setHandled(true);
 		}
 	};
+
 	private Server server;
+
 	private String serverEndpoint;
 	@Autowired
 	private RestTemplate restTemplate;
@@ -109,6 +109,4 @@ public class TraceeClientHttpInterceptorSpringContextIT {
 
 	private static final class EmptyEntity {
 	}
-
-
 }

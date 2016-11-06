@@ -9,8 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +26,8 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringBootTest(value = {"server.port=0"}, classes = TraceeMvcAutoConfigurationTest.Config.class)
-public class TraceeMvcAutoConfigurationTest {
+@SpringBootTest(value = {"server.port=0"}, classes = TraceeMvcAutoConfigurationIT.Config.class)
+public class TraceeMvcAutoConfigurationIT {
 
 	@Autowired
 	ApplicationContext context;
