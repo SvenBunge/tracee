@@ -2,6 +2,8 @@ package io.tracee.binding.springrabbitmq;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 import org.springframework.amqp.core.AnonymousQueue;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -9,29 +11,21 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.test.RabbitListenerTest;
-import org.springframework.amqp.rabbit.test.RabbitListenerTestHarness;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Collections;
+import java.util.List;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
-@ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@DirtiesContext
+@ContextConfiguration
 public class TraceeRabbitListenerIT {
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
-
 
 	@Autowired
 	private Queue queue1;
@@ -41,7 +35,10 @@ public class TraceeRabbitListenerIT {
 
 	@Test
 	public void testTwoWay() throws Exception {
-		assertEquals("FOO", this.rabbitTemplate.convertSendAndReceive(this.queue1.getName(), "foo"));
+//		this.rabbitTemplate.convertAndSend(this.queue1.getName(), "foo");
+
+//		Mockito.verify(rabbitListener).readTpicHeaderFromMessage(Matchers.anyMapOf(String.class, Object.class));
+//		Mockito.verify(rabbitListener).cleanTpicAfterMessage();
 
 //		RabbitListenerTestHarness.InvocationData invocationData = this.harness.getNextInvocationDataFor("foo", 10, TimeUnit.SECONDS);
 //		assertNotNull(invocationData);
@@ -51,11 +48,16 @@ public class TraceeRabbitListenerIT {
 
 	@Configuration
 	@RabbitListenerTest
-	public static final class Config {
+	public static class Config {
 
 		@Bean
 		public TraceeRabbitListener traceeMessageHandler() {
 			return new TraceeRabbitListener();
+		}
+
+		@Bean(name = TraceeRabbitListener.DEFINE_QUEUES)
+		public List<String> traceeQueues() {
+			return Collections.singletonList("queue1");
 		}
 
 		@Bean
@@ -71,7 +73,9 @@ public class TraceeRabbitListenerIT {
 
 		@Bean
 		public RabbitTemplate template() {
-			return new RabbitTemplate(connectionFactory());
+			final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+			rabbitTemplate.setMessagePropertiesConverter(new TraceeMessagePropertiesConverter());
+			return rabbitTemplate;
 		}
 
 		@Bean

@@ -13,6 +13,8 @@ import static io.tracee.configuration.TraceeFilterConfiguration.Channel.AsyncPro
 
 public class TraceeRabbitListener {
 
+	public static final String DEFINE_QUEUES = "traceeRabbitlistenerQueues";
+
 	private final TraceeBackend backend;
 
 	private final String profile;
@@ -30,7 +32,7 @@ public class TraceeRabbitListener {
 		this.profile = profile;
 	}
 
-	@RabbitListener(id="traceeListenerRead", priority = "99999999")
+	@RabbitListener(id="traceeListenerRead", priority = "99999999", queues="#{traceeRabbitlistenerQueues}")
 	public void readTpicHeaderFromMessage(@Header(TraceeConstants.TPIC_HEADER) final Map<String, ?> tpic) {
 
 		if (tpic != null) {
@@ -43,7 +45,7 @@ public class TraceeRabbitListener {
 		}
 	}
 
-	@RabbitListener(id="traceeListenerClean", priority = "-99999999")
+	@RabbitListener(id="traceeListenerClean", priority = "-99999999", queues="#{traceeRabbitlistenerQueues}")
 	public void cleanTpicAfterMessage() {
 		backend.clear();
 	}

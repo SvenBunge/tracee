@@ -17,7 +17,7 @@
 	<description>Please refer to https://github.com/tracee/tracee.</description>
 
 	<properties>
-		<spring-amqp.version>1.6.3.RELEASE</spring-amqp.version>
+		<spring-amqp.version>1.6.5.RELEASE</spring-amqp.version>
 	</properties>
 
 	<dependencies>
@@ -45,16 +45,16 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit-test</artifactId>
 			<version>${spring-amqp.version}</version>
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>io.tracee</groupId>
 			<artifactId>tracee-testhelper</artifactId>
